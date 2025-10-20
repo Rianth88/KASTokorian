@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Buku Kas — v8.6.4 (PWA Full Offline)</title>
+<title>Buku Kas — v8.6.5 (PWA Full Offline)</title>
 <link id="favicon" rel="icon" href="assets/logo-192.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0077b6">
@@ -90,7 +90,7 @@ td.wrap{ white-space:normal; word-break:break-word; }
 #lapFilterCard.compact label{font-size:.78rem;margin:2px 0 4px}
 #lapFilterCard.compact input,#lapFilterCard.compact select{ height:42px; line-height:42px; font-size:14px; padding:0 10px; border-radius:8px; }
 #lapFilterGrid{ display:grid; gap:10px; grid-template-columns: repeat(2, minmax(150px,1fr)); }
-@media (min-width:860px){ #lapFilterGrid{ grid-template-columns: repeat(4, 1fr); } }
+@media (min-width:860px){ #lapFilterGrid{ grid-template-columns:repeat(4, 1fr); } }
 
 /* Sticky ringkasan menempel di bawah header dinamis */
 #lapSticky{ position:sticky; top:var(--hdrH); z-index:49; background:#ffffffcc; backdrop-filter:saturate(1.2) blur(6px); border-bottom:1px solid #e5e7eb; }
@@ -146,21 +146,37 @@ td.wrap{ white-space:normal; word-break:break-word; }
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* Drawer (rounded + transparan) + FAB mengikuti drawer */
-.fab{
-  position:fixed;right:16px;bottom:76px;width:56px;height:56px;border-radius:50%;
-  background:linear-gradient(45deg,var(--blue),var(--purple));color:#fff;
-  display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 10px 20px rgba(0,0,0,.25);z-index:10003;
-  transition:right .25s ease, transform .2s ease;
+.fab {
+  position: fixed;
+  right: 16px;
+  bottom: 76px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 10050;
+  background: linear-gradient(45deg, var(--blue), var(--purple));
+  box-shadow: 0 8px 20px rgba(0,0,0,.25);
+  transition: transform 0.25s ease;
 }
+.fab:hover { opacity: .9; }
+.fab.open { transform: rotate(180deg); } /* ✅ hanya berputar, tidak bergeser */
+
+}
+.fab.open{transform:rotate(180deg);}
+
 @media (min-width:769px){ .fab{bottom:16px} }
 .fab:active{transform:scale(.98)}
-.fab.open{ right: calc(var(--drawerW) + 16px); }
-
 #drawerOverlay{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;z-index:10000}
 .drawer{
   position:fixed;top:8px;right:8px;height:calc(100% - 16px);
   width:var(--drawerW); max-width:360px;
-  background:rgba(255,255,255,.85); backdrop-filter: blur(12px) saturate(1.2);
+  background:rgba(255,255,255,.15); backdrop-filter: blur(12px) saturate(1.2);
   border:1px solid rgba(255,255,255,.6);
   border-radius:14px 0 0 14px;
   box-shadow:-10px 10px 30px rgba(0,0,0,.18);
@@ -266,29 +282,18 @@ input[type="date"]::-webkit-calendar-picker-indicator{margin:0}
 }
 .api-badge .dot{
   width:10px; height:10px; border-radius:50%; display:inline-block;
-  box-shadow:0 0 0 0 transparent;
 }
 .api-badge .lbl{ font-size:.78rem; }
 .api-badge .sep{ opacity:.45; }
-
-@keyframes glow {
-  0%{ box-shadow:0 0 0 0 rgba(22,163,74,.55) }
-  70%{ box-shadow:0 0 0 6px rgba(22,163,74,0) }
-  100%{ box-shadow:0 0 0 0 rgba(22,163,74,0) }
-}
-@keyframes syncPulse {
-  0%{ transform:scale(1); box-shadow:0 0 0 0 rgba(59,130,246,.5); background:#3b82f6; }
-  50%{ transform:scale(1.15); box-shadow:0 0 0 6px rgba(59,130,246,0); }
-  100%{ transform:scale(1); box-shadow:0 0 0 0 rgba(59,130,246,0); }
-}
-
 .api-badge .on  { background:#16a34a; animation:glow 1.8s ease-out infinite; }
 .api-badge .off { background:#dc2626; opacity:.9; }
 .api-badge .sync{ background:#3b82f6; animation:syncPulse 1.2s ease-out infinite; }
+@keyframes glow { 0%{ box-shadow:0 0 0 0 rgba(22,163,74,.55) } 70%{ box-shadow:0 0 0 6px rgba(22,163,74,0) } 100%{ box-shadow:0 0 0 0 rgba(22,163,74,0) } }
+@keyframes syncPulse { 0%{ transform:scale(1); box-shadow:0 0 0 0 rgba(59,130,246,.5); background:#3b82f6; }
+  50%{ transform:scale(1.15); box-shadow:0 0 0 6px rgba(59,130,246,0);} 100%{ transform:scale(1); box-shadow:0 0 0 0 rgba(59,130,246,0);} }
 
 /* === Laporan: area scroll khusus (table/cards) === */
 #lapScroll{ overflow:auto; max-height:calc(100vh - var(--lapTop)); padding-bottom:16px; }
-/* thead tetap terlihat di dalam lapScroll */
 #tblLap thead th{ position:sticky; top:0; z-index:2; background:#f3f4f6; box-shadow:0 1px 0 #e5e7eb; }
 </style>
 </head>
@@ -298,7 +303,7 @@ input[type="date"]::-webkit-calendar-picker-indicator{margin:0}
       <img id="siteLogo" class="logo-img" alt="Logo" src="assets/logo-192.png">
       <div>
         <div class="title">Buku Kas</div>
-        <div class="subtitle">v8.6.4 — PWA Full Offline</div>
+        <div class="subtitle">v8.6.5 — PWA Full Offline</div>
       </div>
     </div>
     <div class="api-badge" id="apiBadge">API?</div>
@@ -498,7 +503,7 @@ input[type="date"]::-webkit-calendar-picker-indicator{margin:0}
       </div>
 
       <div class="auth-actions">
-        <button id="btnCancelAuth" type="button">BATAL</button>
+        <button id="btnCancelAuth" type="button" style="display:none">BATAL</button>
         <button id="authBtn" type="button">LANJUT</button>
       </div>
       <div class="auth-help" id="authHelp" style="margin-top:8px"></div>
@@ -558,7 +563,24 @@ function showToast(msg, ok=true){ const t=$('#toast'); t.textContent=msg; t.styl
 function setLoading(v){ $('#overlay').style.display = v ? 'grid':'none'; }
 function escapeHtml(str){ return String(str||'').replace(/[&<>"']/g, s=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[s])); }
 
+/* helper yg sebelumnya hilang */
+function digitsOnly(s){ return String(s||'').replace(/[^\d]/g,''); }
+function formatIDRInput(el){
+  const raw = digitsOnly(el.value);
+  if(!raw){ el.value=''; return; }
+  const withDots = raw.replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+  el.value = withDots;
+}
+function download(filename, text){
+  const blob = new Blob([text], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=filename; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ document.body.removeChild(a); URL.revokeObjectURL(url); }, 0);
+}
+
 /* ==== TANGGAL LOKAL ==== */
+/* FIX offset: jangan konversi pakai zona UTC → ambil bagian YYYY-MM-DD apa adanya */
 function toLocalISO(date){
   const d = new Date(date instanceof Date ? date : (date || Date.now()));
   const y = d.getFullYear();
@@ -570,26 +592,55 @@ function todayISO(){ return toLocalISO(new Date()); }
 function firstDayMonthISO(any){ const d = new Date(any || Date.now()); d.setDate(1); return toLocalISO(d); }
 function lastDayMonthISO(any){ const d = new Date(any || Date.now()); d.setMonth(d.getMonth()+1,0); return toLocalISO(d); }
 
+/* normalisasi aman — TIDAK memaksa parse jika sudah ada bentuk YYYY-MM-DD */
 function normalizeDateISO(raw){
   if(!raw) return '';
-  if(raw instanceof Date) return toLocalISO(raw);
+
+  // Date object → Y-M-D lokal
+  if(raw instanceof Date){
+    const y = raw.getFullYear();
+    const m = String(raw.getMonth()+1).padStart(2,'0');
+    const d = String(raw.getDate()).padStart(2,'0');
+    return `${y}-${m}-${d}`;
+  }
+
   let s = String(raw).trim();
-  if(/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0,10);
+
+  // ISO lengkap dengan waktu/zona → ambil Y-M-D tanpa parse (hindari offset)
+  const mIso = s.match(/^(\d{4}-\d{2}-\d{2})[T\s]/);
+  if (mIso) return mIso[1];
+
+  // Sudah Y-M-D
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+
+  // Samakan pemisah
   s = s.replace(/[\/.]/g,'-');
+
+  // dd-mm-yyyy (ID) → yyyy-mm-dd (hanya jika dd>12 biar tidak ambigu)
   let m = s.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
-  if(m){ const a=parseInt(m[1],10), b=parseInt(m[2],10); if(a>12){ const d = String(a).padStart(2,'0'), mo=String(b).padStart(2,'0'), y=m[3]; return `${y}-${mo}-${d}`; } }
-  m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/); if(m){ const y=m[1], mo=m[2].padStart(2,'0'), d=m[3].padStart(2,'0'); return `${y}-${mo}-${d}`; }
-  const dt = new Date(s); if(!isNaN(dt)) return toLocalISO(dt); return '';
+  if (m){
+    const d = parseInt(m[1],10), mo = parseInt(m[2],10), y = m[3];
+    if (d > 12) return `${y}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  }
+
+  // yyyy-m-d → yyyy-mm-dd
+  m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if (m){
+    const y=m[1], mo=m[2].padStart(2,'0'), d=m[3].padStart(2,'0');
+    return `${y}-${mo}-${d}`;
+  }
+
+  // Fallback terakhir: coba parse lalu ambil tanggal lokal
+  const dt = new Date(s);
+  if (!isNaN(dt)){
+    const y = dt.getFullYear();
+    const mo = String(dt.getMonth()+1).padStart(2,'0');
+    const d  = String(dt.getDate()).padStart(2,'0');
+    return `${y}-${mo}-${d}`;
+  }
+  return '';
 }
 
-function digitsOnly(str){ return (str||'').replace(/\D/g,''); }
-function formatIDRInput(el){ const digits = digitsOnly(el.value).replace(/^0+/, ''); el.value = digits ? digits.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : ''; el.setSelectionRange(el.value.length, el.value.length); }
-function download(filename, text){
-  const blob = new Blob([text], {type:'text/csv;charset=utf-8;'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click();
-  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 500);
-}
 
 /* === AUTH (PIN offline) === */
 const PIN_KEY = 'KAS_PIN_HASH';
@@ -614,8 +665,13 @@ function openAuth(mode){
   AUTH_MODE = mode;
   const hasPin = !!localStorage.getItem(PIN_KEY);
   $('#authBackdrop').style.display = 'grid';
+
+  // tampilkan field yang relevan
   $('#rowOldPin').style.display = (mode==='change') ? '' : 'none';
-  document.getElementById('pinConfirmRow').style.display = (mode==='setup' || mode==='change') ? '' : 'none';
+  $('#pinConfirmRow').style.display = (mode==='setup' || mode==='change') ? '' : 'none';
+
+  // BATAL hanya untuk ganti PIN (sesuai request)
+  document.getElementById('btnCancelAuth').style.display = (mode==='change') ? '' : 'none';
 
   if(mode==='setup'){
     $('#authTitle').textContent = '🔒 Setel PIN';
@@ -837,7 +893,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   window.addEventListener('resize', ()=>{ applyAutoLapMode(); updateLapHeights(); });
   window.addEventListener('orientationchange', ()=>{ applyAutoLapMode(); updateLapHeights(); });
 
-  // PWA offline add-on: load helper and flush queue
+  // PWA offline add-on: load helper and flush queue (file eksternal opsional)
   const scr = document.createElement('script'); scr.src='pwa-offline.js'; document.body.appendChild(scr);
   scr.onload = ()=> { if(window.flushKasQueue) window.flushKasQueue(); };
 
@@ -897,6 +953,7 @@ async function refreshRingkasan(){
 
     ALL_ROWS = (js.data || [])
       .filter(r => String(r[0]).toLowerCase() !== 'tanggal')
+      // FIX tanggal: normalisasi aman → tidak mengubah hari
       .map(r => { const copy=[...r]; copy[0]=normalizeDateISO(copy[0]); return copy; })
       .filter(r => r[0]);
 
@@ -945,31 +1002,33 @@ function renderLaporan(){
 
   LAST_LAP_ROWS = rows;
 
-  if(LAP_MODE==='table'){
-    const tb = $('#tblLap tbody'); tb.innerHTML='';
-    rows.forEach(r=>{
+  if (LAP_MODE === 'table') {
+    const tb = $('#tblLap tbody');
+    tb.innerHTML = '';
+    rows.forEach(r => {
       const tr = document.createElement('tr');
-      tr.className = rowClass(r[2]||'');
+      tr.className = rowClass(r[2] || '');
       tr.innerHTML = `
-        <td data-label="Tanggal">${escapeHtml(r[0])}</td>
-        <td class="wrap" data-label="Uraian">${escapeHtml(r[1]||'')}</td>
-        <td data-label="Jenis"><span class="badge ${jenisClass(r[2]||'')}">${escapeHtml(r[2]||'')}</span></td>
-        <td class="num ${numClass(r[2]||'')}" data-label="Nominal">${toIDR(r[3])}</td>
-        <td data-label="Kategori">${r[4]? kategoriChip(r[4]) : ''}</td>
-        <td class="num" data-label="Saldo">${toIDR(r[5]||0)}</td>`;
+        <td data-label="Tanggal" data-iso="${escapeHtml(r[0])}">${escapeHtml(r[0])}</td>
+        <td class="wrap" data-label="Uraian">${escapeHtml(r[1] || '')}</td>
+        <td data-label="Jenis"><span class="badge ${jenisClass(r[2] || '')}">${escapeHtml(r[2] || '')}</span></td>
+        <td class="num ${numClass(r[2] || '')}" data-label="Nominal">${toIDR(r[3])}</td>
+        <td data-label="Kategori">${r[4] ? kategoriChip(r[4]) : ''}</td>
+        <td class="num" data-label="Saldo">${toIDR(r[5] || 0)}</td>
+      `;
       tb.appendChild(tr);
     });
   } else {
-    renderLapCards(rows, true); // compact
+    renderLapCards(rows, true); // compact cards
   }
 
+  // update header ringkasan laporan
   const s = calcSummaries(rows);
   $('#lapHdrMasuk').textContent   = toIDR(s.sumMasuk);
   $('#lapHdrKeluar').textContent  = toIDR(s.sumKeluar);
   const H = $('#lapHdrLaba'); H.textContent = toIDR(s.laba); H.classList.toggle('pos', s.laba>=0); H.classList.toggle('neg', s.laba<0);
   $('#lapHdrDisisih').textContent = toIDR(s.disisih);
 
-  // pastikan tinggi sticky dihitung ulang
   updateLapHeights();
 }
 
@@ -1280,14 +1339,14 @@ function renderDashboardNumbers(){
 
 /* === Drawer === */
 function openDrawer(){
-  $('#drawer').classList.add('open'); $('#drawer').setAttribute('aria-hidden','false');
+  $('#drawer').classList.add('open');
   $('#drawerOverlay').style.display='block';
-  $('#fab').textContent='◀'; $('#fab').setAttribute('aria-expanded','true'); $('#fab').classList.add('open');
+  $('#fab').classList.add('open'); // ✅ hanya berputar
 }
 function closeDrawer(){
-  $('#drawer').classList.remove('open'); $('#drawer').setAttribute('aria-hidden','true');
+  $('#drawer').classList.remove('open');
   $('#drawerOverlay').style.display='none';
-  $('#fab').textContent='➤'; $('#fab').setAttribute('aria-expanded','false'); $('#fab').classList.remove('open');
+  $('#fab').classList.remove('open'); // ✅ putar balik
 }
 function toggleDrawer(){ if($('#drawer').classList.contains('open')) closeDrawer(); else openDrawer(); }
 
